@@ -1,61 +1,113 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MuseumApp());
 }
 
-class MyApp extends StatelessWidget {
+class MuseumApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Calculator',
+      title: 'Museum',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.brown, // Couleur primaire de votre choix (ex: Brown)
       ),
-      home: MyHomePage(),
+      home: Artwork(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class Artwork extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _ArtworkState createState() => _ArtworkState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter += 2; 
-    });
-  }
+class _ArtworkState extends State<Artwork> {
+  bool _isFavorite = false;
+  bool _showDescription = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calculator'),
+        title: Text('Museum'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Image.asset('assets/images/Mona_Lisa.jpg'),
             Text(
-              '$_counter + 2 = ${_counter + 2}',
-              style: Theme.of(context).textTheme.headline4,
+              'Mona Lisa',
+              style: TextStyle(
+                fontFamily: 'Merriweather',
+                fontSize: 30,
+                color: Colors.brown,
+              ),
             ),
-            SizedBox(height: 20),
-            _counter > 0
-                ? Text('Vous avez cliqué ${_counter ~/ 2} fois')
-                : Container(),
+            Text(
+              'Léonard De Vinci',
+              style: TextStyle(
+                fontFamily: 'Merriweather',
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.brown,
+              ),
+            ),
+            Container(
+  decoration: BoxDecoration(
+    color: Colors.white.withOpacity(0.75),
+    shape: BoxShape.circle,
+  ),
+  child: Opacity(
+    opacity: _isFavorite ? 1.0 : 0.75, // Utilisez Opacity pour définir l'opacité
+    child: Icon(
+      _isFavorite ? Icons.favorite : Icons.favorite_border,
+      size: 100,
+      color: _isFavorite ? Colors.red : Colors.white,
+    ),
+  ),
+),
+            IconButton(
+              icon: Icon(Icons.article),
+              onPressed: () {
+                setState(() {
+                  _showDescription = !_showDescription;
+                });
+              },
+            ),
+            if (_showDescription)
+              SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  child: Text(
+                    // Texte de description à afficher/masquer
+                    'La Joconde, ou Portrait de Mona Lisa, est un tableau de l\'artiste Léonard de Vinci...',
+                    style: TextStyle(
+                      fontFamily: 'Merriweather',
+                      fontSize: 15,
+                      color: Colors.brown,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Text('+2'),
+        onPressed: () {
+          setState(() {
+            _isFavorite = !_isFavorite;
+            if (_isFavorite) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Oeuvre ajoutée à vos favoris'),
+                ),
+              );
+            }
+          });
+        },
+        child: Icon(Icons.favorite),
       ),
     );
   }
